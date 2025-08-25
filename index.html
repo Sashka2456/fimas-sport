@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fimas Sport - Результаты соревнований</title>
+    <style>
+        /* Стили остаются без изменений, как в исходном коде */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #1a237e;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .admin-btn {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .admin-btn:hover {
+            background-color: #f57c00;
+        }
+
+        /* Login form */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        /* Main content */
+        main {
+            padding: 2rem 0;
+            min-height: 60vh;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            color: #1a237e;
+        }
+
+        /* Lists */
+        .list-item {
+            background-color: white;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-item a {
+            text-decoration: none;
+            color: #1a237e;
+            font-weight: bold;
+            flex-grow: 1;
+            cursor: pointer;
+        }
+
+        .list-item a:hover {
+            text-decoration: underline;
+        }
+
+        .admin-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-add {
+            background-color: #2196f3;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .btn-complete {
+            background-color: #9c27b0;
+            color: white;
+            margin: 1rem 0;
+        }
+
+        /* Results table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #1a237e;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Forms for adding/editing */
+        .add-form {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .add-form input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* GitHub Settings */
+        .github-settings {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .github-settings h3 {
+            margin-bottom: 1rem;
+            color: #1a237e;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .admin-btn {
+                margin-top: 1rem;
+            }
+            
+            .list-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .admin-controls {
+                margin-top: 0.5rem;
+                align-self: flex-end;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 4px;
+            display: none;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .notification.error {
+            background-color: #f44336;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1a237e;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a237e;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <h1><a href="#" style="color: white; text-decoration: none;" onclick="navigateTo('')">Fimas Sport</a></h1>
+            <button class="admin-btn" id="adminBtn">Войти в режим администратора</button>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-form">
+            <h2>Вход для администратора</h2>
+            <div class="form-group">
+                <label for="login">Логин:</label>
+                <input type="text" id="login" placeholder="Введите логин">
+            </div>
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" placeholder="Введите пароль">
+            </div>
+            <div class="form-buttons">
+                <button class="btn" id="loginCancel">Отмена</button>
+                <button class="btn admin-btn" id="loginSubmit">Войти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GitHub Settings Modal -->
+    <div class="login-modal" id="githubSettingsModal">
+        <div class="login-form">
+            <h2>Настройки GitHub API</h2>
+            <div class="form-group">
+                <label for="githubToken">Personal Access Token:</label>
+                <input type="password" id="githubToken" placeholder="Введите токен доступа">
+                <small>Токен должен иметь права на управление репозиторием</small>
+            </div>
+            <div class="form-group">
+                <label for="githubRepo">Репозиторий:</label>
+                <input type="text" id="githubRepo" placeholder="username/repository">
+            </div>
+            <div class="form-group">
+                <label for="githubBranch">Ветка:</label>
+                <input type="text" id="githubBranch" placeholder="main" value="main">
+            </div>
+            <div class="form-group">
+                <label for="githubFilePath">Путь к файлу:</label>
+                <input type="text" id="githubFilePath" placeholder="data/competitions.json" value="data/competitions.json">
+            </div>
+            <div class="form-buttons">
+                <button class="btn" id="githubSettingsCancel">Отмена</button>
+                <button class="btn admin-btn" id="githubSettingsSave">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="spinner" id="loadingSpinner"></div>
+        <div id="content">
+            <!-- Content will be loaded here -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Fimas Sport &copy; 2023. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Application state
+        const state = {
+            isAdmin: false,
+            competitions: [],
+            currentView: 'competitions',
+            currentCompetitionId: null,
+            currentRaceId: null,
+            githubConfig: {
+                token: '',
+                repo: '',
+                branch: 'main',
+                filePath: 'data/competitions.json'
+            }
+        };
+
+        // DOM Elements
+        const adminBtn = document.getElementById('adminBtn');
+        const loginModal = document.getElementById('loginModal');
+        const loginCancel = document.getElementById('loginCancel');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const githubSettingsModal = document.getElementById('githubSettingsModal');
+        const githubSettingsCancel = document.getElementById('githubSettingsCancel');
+        const githubSettingsSave = document.getElementById('githubSettingsSave');
+        const contentDiv = document.getElementById('content');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const notification = document.getElementById('notification');
+
+        // Initialize default data if not exists
+        function initializeData() {
+            const defaultData = [
+                {
+                    id: 1,
+                    name: "Чемпионат мира по гребле 2023",
+                    races: [
+                        {
+                            id: 1,
+                            name: "Одиночки 500м",
+                            participants: [
+                                { id: 1, number: 101, name: "Иван Петров", time: null, place: null },
+                                { id: 2, number: 102, name: "Алексей Смирнов", time: null, place: null },
+                                { id: 3, number: 103, name: "Михаил Иванов", time: null, place: null }
+                            ],
+                            completed: false
+                        },
+                        {
+                            id: 2,
+                            name: "Двойки 1000м",
+                            participants: [
+                                { id: 1, number: 201, name: "Команда Россия", time: null, place: null },
+                                { id: 2, number: 202, name: "Команда Германия", time: null, place: null }
+                            ],
+                            completed: false
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Кубок Европы по каноэ 2023",
+                    races: [
+                        {
+                            id: 1,
+                            name: "Каноэ-одиночки 200м",
+                            participants: [
+                                { id: 1, number: 301, name: "Джон Смит", time: null, place: null },
+                                { id: 2, number: 302, name: "Пьер Дюпон", time: null, place: null }
+                            ],
+                            completed: false
+                        }
+                    ]
+                }
+            ];
+
+            // For initial setup, we'll use default data if no data exists
+            state.competitions = defaultData;
+        }
+
+        // Show notification
+        function showNotification(message, isError = false) {
+            notification.textContent = message;
+            notification.className = isError ? 'notification error' : 'notification';
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Show loading spinner
+        function showLoading() {
+            loadingSpinner.style.display = 'block';
+            contentDiv.style.display = 'none';
+        }
+
+        // Hide loading spinner
+        function hideLoading() {
+            loadingSpinner.style.display = 'none';
+            contentDiv.style.display = 'block';
+        }
+
+        // Event Listeners
+        adminBtn.addEventListener('click', showLoginModal);
+        loginCancel.addEventListener('click', hideLoginModal);
+        loginSubmit.addEventListener('click', handleLogin);
+        githubSettingsCancel.addEventListener('click', hideGithubSettingsModal);
+        githubSettingsSave.addEventListener('click', saveGithubSettings);
+
+        // Initialize the app
+        async function init() {
+            showLoading();
+            
+            // Load GitHub configuration if exists
+            const savedGithubConfig = localStorage.getItem('githubConfig');
+            if (savedGithubConfig) {
+                state.githubConfig = JSON.parse(savedGithubConfig);
+            }
+            
+            // Check if user was previously logged in
+            const savedAdminState = localStorage.getItem('isAdmin');
+            if (savedAdminState === 'true') {
+                state.isAdmin = true;
+                updateAdminUI();
+            }
+            
+            // Load data from GitHub or use default
+            try {
+                if (state.githubConfig.token && state.githubConfig.repo) {
+                    await loadDataFromGitHub();
+                } else {
+                    initializeData();
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                initializeData();
+                showNotification('Ошибка загрузки данных. Используются локальные данные.', true);
+            }
+            
+            // Handle initial routing
+            handleRouting();
+            
+            // Listen for hash changes
+            window.addEventListener('hashchange', handleRouting);
+            
+            hideLoading();
+        }
+
+        // GitHub API functions
+        async function loadDataFromGitHub() {
+            showLoading();
+            
+            try {
+                const { token, repo, branch, filePath } = state.githubConfig;
+                
+                const response = await fetch(
+                    `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`,
+                    {
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    }
+                );
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        // File doesn't exist yet, initialize with default data
+                        initializeData();
+                        await saveDataToGitHub();
+                        return;
+                    }
+                    throw new Error(`GitHub API error: ${response.status}`);
+                }
+                
+                const fileData = await response.json();
+                const content = atob(fileData.content);
+                state.competitions = JSON.parse(content);
+                
+            } catch (error) {
+                console.error('Error loading data from GitHub:', error);
+                throw error;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function saveDataToGitHub() {
+            showLoading();
+            
+            try {
+                const { token, repo, branch, filePath } = state.githubConfig;
+                
+                // First, get the current SHA of the file if it exists
+                let sha = null;
+                try {
+                    const getResponse = await fetch(
+                        `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`,
+                        {
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Accept': 'application/vnd.github.v3+json'
+                            }
+                        }
+                    );
+                    
+                    if (getResponse.ok) {
+                        const fileData = await getResponse.json();
+                        sha = fileData.sha;
+                    }
+                } catch (e) {
+                    // File doesn't exist yet, that's fine
+                }
+                
+                const content = btoa(JSON.stringify(state.competitions, null, 2));
+                const message = 'Update competitions data';
+                
+                const response = await fetch(
+                    `https://api.github.com/repos/${repo}/contents/${filePath}`,
+                    {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message,
+                            content,
+                            branch,
+                            sha
+                        })
+                    }
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.status}`);
+                }
+                
+                showNotification('Данные успешно сохранены на GitHub');
+                return true;
+                
+            } catch (error) {
+                console.error('Error saving data to GitHub:', error);
+                showNotification('Ошибка сохранения данных на GitHub', true);
+                return false;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Show login modal
+        function showLoginModal() {
+            if (state.isAdmin) {
+                // Show GitHub settings if already admin
+                showGithubSettingsModal();
+                return;
+            }
+            loginModal.style.display = 'flex';
+        }
+
+        // Hide login modal
+        function hideLoginModal() {
+            loginModal.style.display = 'none';
+            // Clear input fields
+            document.getElementById('login').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Show GitHub settings modal
+        function showGithubSettingsModal() {
+            document.getElementById('githubToken').value = state.githubConfig.token;
+            document.getElementById('githubRepo').value = state.githubConfig.repo;
+            document.getElementById('githubBranch').value = state.githubConfig.branch;
+            document.getElementById('githubFilePath').value = state.githubConfig.filePath;
+            githubSettingsModal.style.display = 'flex';
+        }
+
+        // Hide GitHub settings modal
+        function hideGithubSettingsModal() {
+            githubSettingsModal.style.display = 'none';
+        }
+
+        // Save GitHub settings
+        function saveGithubSettings() {
+            const token = document.getElementById('githubToken').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            const branch = document.getElementById('githubBranch').value.trim() || 'main';
+            const filePath = document.getElementById('githubFilePath').value.trim() || 'data/competitions.json';
+            
+            if (!token || !repo) {
+                showNotification('Заполните обязательные поля: токен и репозиторий', true);
+                return;
+            }
+            
+            state.githubConfig = { token, repo, branch, filePath };
+            localStorage.setItem('githubConfig', JSON.stringify(state.githubConfig));
+            
+            hideGithubSettingsModal();
+            showNotification('Настройки GitHub сохранены');
+            
+            // Reload data from GitHub with new settings
+            loadDataFromGitHub().then(() => {
+                renderCurrentView();
+            }).catch(error => {
+                console.error('Error loading data with new settings:', error);
+                showNotification('Ошибка загрузки данных с новыми настройками', true);
+            });
+        }
+
+        // Handle login
+        function handleLogin() {
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+            
+            if (login === 'canoe' && password === '1111') {
+                state.isAdmin = true;
+                localStorage.setItem('isAdmin', 'true');
+                updateAdminUI();
+                hideLoginModal();
+                showNotification('Вы вошли в режим администратора');
+                
+                // Show GitHub settings if not configured
+                if (!state.githubConfig.token || !state.githubConfig.repo) {
+                    showGithubSettingsModal();
+                }
+                
+                renderCurrentView();
+            } else {
+                showNotification('Неверный логин или пароль', true);
+            }
+        }
+
+        // Update UI based on admin state
+        function updateAdminUI() {
+            if (state.isAdmin) {
+                adminBtn.textContent = 'Настройки GitHub';
+            } else {
+                adminBtn.textContent = 'Войти в режим администратора';
+            }
+        }
+
+        // Handle logout
+        function handleLogout() {
+            state.isAdmin = false;
+            localStorage.removeItem('isAdmin');
+            updateAdminUI();
+            showNotification('Вы вышли из режима администратора');
+            renderCurrentView();
+        }
+
+        // Handle routing based on hash
+        function handleRouting() {
+            const hash = window.location.hash;
+            
+            if (!hash || hash === '#/' || hash === '#') {
+                state.currentView = 'competitions';
+                renderCompetitionsList();
+            } else if (hash.startsWith('#/competition/')) {
+                const competitionId = parseInt(hash.split('/')[2]);
+                state.currentCompetitionId = competitionId;
+                state.currentView = 'competition';
+                renderCompetition();
+            } else if (hash.startsWith('#/race/')) {
+                const parts = hash.split('/');
+                const competitionId = parseInt(parts[2]);
+                const raceId = parseInt(parts[3]);
+                state.currentCompetitionId = competitionId;
+                state.currentRaceId = raceId;
+                state.currentView = 'race';
+                renderRace();
+            } else {
+                // Unknown route, redirect to home
+                navigateTo('');
+            }
+        }
+
+        // Navigate to a new view using hash
+        function navigateTo(path) {
+            window.location.hash = path;
+        }
+
+        // Render competitions list
+        function renderCompetitionsList() {
+            let html = `<h2>Список соревнований</h2>`;
+            
+            if (state.isAdmin) {
+                html += `
+                    <div class="github-settings">
+                        <h3>Настройки синхронизации с GitHub</h3>
+                        <p>Текущий репозиторий: ${state.githubConfig.repo || 'не настроен'}</p>
+                        <p>Файл данных: ${state.githubConfig.filePath}</p>
+                        <button class="btn admin-btn" onclick="showGithubSettingsModal()">Изменить настройки GitHub</button>
+                        <button class="btn admin-btn" onclick="handleLogout()">Выйти из режима администратора</button>
+                    </div>
+                    <div class="add-form">
+                        <input type="text" id="newCompetitionName" placeholder="Название соревнования">
+                        <button class="btn btn-add" onclick="addCompetition()">Добавить соревнование</button>
+                    </div>
+                `;
+            }
+            
+            if (state.competitions.length === 0) {
+                html += `<p>Соревнований пока нет.</p>`;
+            } else {
+                state.competitions.forEach(competition => {
+                    html += `
+                        <div class="list-item">
+                            <a onclick="navigateTo('#/competition/${competition.id}')">${competition.name}</a>
+                            ${state.isAdmin ? `
+                                <div class="admin-controls">
+                                    <button class="btn btn-edit" onclick="event.stopPropagation(); editCompetition(${competition.id})">Редактировать</button>
+                                    <button class="btn btn-delete" onclick="event.stopPropagation(); deleteCompetition(${competition.id})">Удалить</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            contentDiv.innerHTML = html;
+        }
+
+        // Render competition details
+        function renderCompetition() {
+            const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+            
+            if (!competition) {
+                navigateTo('');
+                return;
+            }
+            
+            let html = `
+                <h2>${competition.name}</h2>
+                <button class="btn" onclick="navigateTo('')">← Назад к списку соревнований</button>
+            `;
+            
+            if (state.isAdmin) {
+                html += `
+                    <div class="add-form">
+                        <input type="text" id="newRaceName" placeholder="Название заезда">
+                        <button class="btn btn-add" onclick="addRace()">Добавить заезд</button>
+                    </div>
+                `;
+            }
+            
+            if (competition.races.length === 0) {
+                html += `<p>Заездов пока нет.</p>`;
+            } else {
+                html += `<h3 style="margin-top: 1rem;">Заезды:</h3>`;
+                competition.races.forEach(race => {
+                    html += `
+                        <div class="list-item">
+                            <a onclick="navigateTo('#/race/${competition.id}/${race.id}')">${race.name}</a>
+                            ${state.isAdmin ? `
+                                <div class="admin-controls">
+                                    <button class="btn btn-edit" onclick="event.stopPropagation(); editRace(${race.id})">Редактировать</button>
+                                    <button class="btn btn-delete" onclick="event.stopPropagation(); deleteRace(${race.id})">Удалить</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            contentDiv.innerHTML = html;
+        }
+
+        // Render race details
+        function renderRace() {
+            const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+            if (!competition) {
+                navigateTo('');
+                return;
+            }
+            
+            const race = competition.races.find(r => r.id === state.currentRaceId);
+            if (!race) {
+                navigateTo(`#/competition/${competition.id}`);
+                return;
+            }
+            
+            let html = `
+                <h2>${race.name}</h2>
+                <p><strong>Соревнование:</strong> ${competition.name}</p>
+                <button class="btn" onclick="navigateTo('#/competition/${competition.id}')">← Назад к соревнованию</button>
+            `;
+            
+            if (state.isAdmin) {
+                html += `
+                    <div class="add-form">
+                        <input type="number" id="newParticipantNumber" placeholder="Номер участника">
+                        <input type="text" id="newParticipantName" placeholder="Имя и фамилия участника">
+                        <button class="btn btn-add" onclick="addParticipant()">Добавить участника</button>
+                    </div>
+                `;
+            }
+            
+            if (race.completed) {
+                html += `<h3 style="margin-top: 1rem;">Результаты заезда:</h3>`;
+                html += renderResultsTable(race);
+            } else {
+                html += `<h3 style="margin-top: 1rem;">Участники:</h3>`;
+                
+                if (race.participants.length === 0) {
+                    html += `<p>Участников пока нет.</p>`;
+                } else {
+                    html += `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Номер</th>
+                                    <th>Имя и фамилия</th>
+                                    ${state.isAdmin ? '<th>Действия</th>' : ''}
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    race.participants.forEach(participant => {
+                        html += `
+                            <tr>
+                                <td>${participant.number}</td>
+                                <td>${participant.name}</td>
+                                ${state.isAdmin ? `
+                                    <td>
+                                        <button class="btn btn-edit" onclick="editParticipant(${participant.id})">Редактировать</button>
+                                        <button class="btn btn-delete" onclick="deleteParticipant(${participant.id})">Удалить</button>
+                                    </td>
+                                ` : ''}
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `</tbody></table>`;
+                }
+                
+                if (state.isAdmin && race.participants.length > 0) {
+                    html += `
+                        <button class="btn btn-complete" onclick="completeRace()">Завершить заезд</button>
+                    `;
+                }
+            }
+            
+            contentDiv.innerHTML = html;
+        }
+
+        // Render results table
+        function renderResultsTable(race) {
+            const sortedParticipants = [...race.participants].sort((a, b) => {
+                if (a.place === null) return 1;
+                if (b.place === null) return -1;
+                return a.place - b.place;
+            });
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Место</th>
+                            <th>Номер</th>
+                            <th>Имя и фамилия</th>
+                            <th>Время</th>
+                            ${state.isAdmin ? '<th>Действия</th>' : ''}
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            sortedParticipants.forEach(participant => {
+                html += `
+                    <tr>
+                        <td>${participant.place || '-'}</td>
+                        <td>${participant.number}</td>
+                        <td>${participant.name}</td>
+                        <td>${participant.time || '-'}</td>
+                        ${state.isAdmin ? `
+                            <td>
+                                <button class="btn btn-edit" onclick="editResult(${participant.id})">Изменить результат</button>
+                            </td>
+                        ` : ''}
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table>`;
+            
+            if (state.isAdmin) {
+                html += `
+                    <button class="btn" onclick="reopenRace()">Возобновить заезд</button>
+                `;
+            }
+            
+            return html;
+        }
+
+        // Save data and update GitHub
+        async function saveData() {
+            if (state.githubConfig.token && state.githubConfig.repo) {
+                return await saveDataToGitHub();
+            } else {
+                // Fallback to localStorage if GitHub not configured
+                localStorage.setItem('competitions', JSON.stringify(state.competitions));
+                showNotification('Данные сохранены локально');
+                return true;
+            }
+        }
+
+        // Admin functions for competitions
+        async function addCompetition() {
+            const nameInput = document.getElementById('newCompetitionName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showNotification('Введите название соревнования', true);
+                return;
+            }
+            
+            const newId = state.competitions.length > 0 
+                ? Math.max(...state.competitions.map(c => c.id)) + 1 
+                : 1;
+            
+            state.competitions.push({
+                id: newId,
+                name: name,
+                races: []
+            });
+            
+            const success = await saveData();
+            if (success) {
+                nameInput.value = '';
+                showNotification('Соревнование добавлено');
+                renderCompetitionsList();
+            }
+        }
+
+        async function editCompetition(id) {
+            const competition = state.competitions.find(c => c.id === id);
+            const newName = prompt('Введите новое название соревнования:', competition.name);
+            
+            if (newName !== null && newName.trim() !== '') {
+                competition.name = newName.trim();
+                const success = await saveData();
+                if (success) {
+                    showNotification('Название соревнования изменено');
+                    renderCompetitionsList();
+                }
+            }
+        }
+
+        async function deleteCompetition(id) {
+            if (confirm('Вы уверены, что хотите удалить это соревнование?')) {
+                state.competitions = state.competitions.filter(c => c.id !== id);
+                const success = await saveData();
+                if (success) {
+                    showNotification('Соревнование удалено');
+                    renderCompetitionsList();
+                }
+            }
+        }
+
+        // Admin functions for races
+        async function addRace() {
+            const nameInput = document.getElementById('newRaceName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showNotification('Введите название заезда', true);
+                return;
+            }
+            
+            const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+            const newId = competition.races.length > 0 
+                ? Math.max(...competition.races.map(r => r.id)) + 1 
+                : 1;
+            
+            competition.races.push({
+                id: newId,
+                name: name,
+                participants: [],
+                completed: false
+            });
+            
+            const success = await saveData();
+            if (success) {
+                nameInput.value = '';
+                showNotification('Заезд добавлен');
+                renderCompetition();
+            }
+        }
+
+        async function editRace(id) {
+            const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+            const race = competition.races.find(r => r.id === id);
+            const newName = prompt('Введите новое название заезда:', race.name);
+            
+            if (newName !== null && newName.trim() !== '') {
+                race.name = newName.trim();
+                const success = await saveData();
+                if (success) {
+                    showNotification('Название заезда изменено');
+                    renderCompetition();
+                }
+            }
+        }
+
+        async function deleteRace(id) {
+            if (confirm('Вы уверены, что хотите удалить этот заезд?')) {
+                const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+                competition.races = competition.races.filter(r => r.id !== id);
+                const success = await saveData();
+                if (success) {
+                    showNotification('Заезд удален');
+                    renderCompetition();
+                }
+            }
+        }
+
+        // Admin functions for participants
+        async function addParticipant() {
+            const numberInput = document.getElementById('newParticipantNumber');
+            const nameInput = document.getElementById('newParticipantName');
+            const number = numberInput.value.trim();
+            const name = nameInput.value.trim();
+            
+            if (!number || !name) {
+                showNotification('Заполните все поля', true);
+                return;
+            }
+            
+            const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+            const race = competition.races.find(r => r.id === state.currentRaceId);
+            
+            const newId = race.participants.length > 0 
+                ? Math.max(...race.participants.map(p => p.id)) + 1 
+                : 1;
+            
+            race.participants.push({
+                id: newId,
+                number: parseInt(number),
+                name: name,
+                time: null,
+                place: null
+            });
+            
+            const success = await saveData();
+            if (success) {
+                numberInput.value = '';
+                nameInput.value = '';
+                showNotification('Участник добавлен');
+                renderRace();
+            }
+        }
+
+        async function editParticipant(id) {
+            const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+            const race = competition.races.find(r => r.id === state.currentRaceId);
+            const participant = race.participants.find(p => p.id === id);
+            
+            const newNumber = prompt('Введите новый номер участника:', participant.number);
+            if (newNumber === null) return;
+            
+            const newName = prompt('Введите новое имя участника:', participant.name);
+            if (newName === null) return;
+            
+            if (newNumber.trim() !== '' && newName.trim() !== '') {
+                participant.number = parseInt(newNumber);
+                participant.name = newName.trim();
+                const success = await saveData();
+                if (success) {
+                    showNotification('Данные участника изменены');
+                    renderRace();
+                }
+            }
+        }
+
+        async function deleteParticipant(id) {
+            if (confirm('Вы уверены, что хотите удалить этого участника?')) {
+                const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+                const race = competition.races.find(r => r.id === state.currentRaceId);
+                race.participants = race.participants.filter(p => p.id !== id);
+                const success = await saveData();
+                if (success) {
+                    showNotification('Участник удален');
+                    renderRace();
+                }
+            }
+        }
+
+        // Complete race and enter results
+        async function completeRace() {
+            const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+            const race = competition.races.find(r => r.id === state.currentRaceId);
+            
+            race.completed = true;
+            
+            // Prompt for results for each participant
+            for (const participant of race.participants) {
+                let time, place;
+                
+                do {
+                    time = prompt(`Введите время для участника ${participant.name} (номер ${participant.number}):`);
+                    if (time === null) return; // User cancelled
+                } while (!time);
+                
+                do {
+                    place = prompt(`Введите место для участника ${participant.name} (номер ${participant.number}):`);
+                    if (place === null) return; // User cancelled
+                } while (!place || isNaN(place));
+                
+                participant.time = time;
+                participant.place = parseInt(place);
+            }
+            
+            const success = await saveData();
+            if (success) {
+                showNotification('Результаты заезда сохранены');
+                renderRace();
+            }
+        }
+
+        // Reopen race for editing
+        async function reopenRace() {
+            if (confirm('Вы уверены, что хотите возобновить заезд? Все результаты будут сброшены.')) {
+                const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+                const race = competition.races.find(r => r.id === state.currentRaceId);
+                
+                race.completed = false;
+                
+                for (const participant of race.participants) {
+                    participant.time = null;
+                    participant.place = null;
+                }
+                
+                const success = await saveData();
+                if (success) {
+                    showNotification('Заезд возобновлен');
+                    renderRace();
+                }
+            }
+        }
+
+        // Edit individual result
+        async function editResult(id) {
+            const competition = state.competitions.find(c => c.id === state.currentCompetitionId);
+            const race = competition.races.find(r => r.id === state.currentRaceId);
+            const participant = race.participants.find(p => p.id === id);
+            
+            let time = prompt('Введите время:', participant.time || '');
+            if (time === null) return;
+            
+            let place = prompt('Введите место:', participant.place || '');
+            if (place === null) return;
+            
+            if (time.trim() !== '' && place.trim() !== '' && !isNaN(place)) {
+                participant.time = time;
+                participant.place = parseInt(place);
+                const success = await saveData();
+                if (success) {
+                    showNotification('Результат обновлен');
+                    renderRace();
+                }
+            }
+        }
+
+        // Render current view based on state
+        function renderCurrentView() {
+            switch (state.currentView) {
+                case 'competitions':
+                    renderCompetitionsList();
+                    break;
+                case 'competition':
+                    renderCompetition();
+                    break;
+                case 'race':
+                    renderRace();
+                    break;
+                default:
+                    renderCompetitionsList();
+            }
+        }
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>
